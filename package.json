@@ -1,0 +1,15 @@
+{
+  "name": "statuschecker",
+  "version": "1.0.0",
+  "description": "status checker",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "author": "test",
+  "license": "test",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "request": "^2.87.0"
+  }
+}
