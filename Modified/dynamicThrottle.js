@@ -1,16 +1,4 @@
-/*************************
- * 
- * 
- * 
- * 
- * DONT USE THIS. JUST TRY TO IMPLEMNT MORE DYNAMIC LOGIC
- * 
- * 
- * 
- * 
- */
-
-const request = require('request');
+ const request = require('request');
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
@@ -20,32 +8,17 @@ function callRequestLoop(interval,firstReq, secondReq) {
     // console.log(firstReq);
     // console.log(secondReq);
     // console.log(JSON.parse(JSON.stringify(firstReq)));
-    // console.log(JSON.parse(JSON.stringify(secondReq)));
-    const options =  JSON.parse(JSON.stringify(firstReq));
-    console.log(options);
+    // console.log(JSON.parse(JSON.stringify(secondReq))); 
+ 
     requestLoop = setInterval(function () {
-        request(
-        //     {
-        //     url: process.env.OnRequest,
-        //     method: 'GET',
-        //     timeout: 10000,
-        //     followRedirect: true
-        // }
-        options
+        request( 
+        JSON.parse(firstReq)
         , function (error, res, req) { 
             if (!error && res.statusMessage === 'OK') {
+                secondReq.body=res.body
                 request(
-                //     {
-                //     url: process.env.OnSuccess,
-                //     headers : {
-                //         "content-type": "application/json",
-                //     },
-                //     method: 'POST',
-                //     followRedirect: true,
-                //     body: JSON.parse(res.body), 
-                //     json: true
-                // }
-                JSON.parse(secondReq.replace('##res.body##',res.body))
+              
+               JSON.parse(secondReq)
                 , function (err, res, req) {
                     //execute action  
                     console.log(req);
@@ -61,12 +34,13 @@ function callRequestLoop(interval,firstReq, secondReq) {
 }
 function callExternalApiUsingRequestDynamic(callback, req) {
     let interval = req.headers.interval || process.env.INTERVAL || 60000; 
-    let runTime = req.headers.runtime || process.env.RUN_TIME || 120000;
-    let firstApiObject = req.headers.firstApiObject || process.env.FIRST_API_OBJECT || "{'url': 'http://dummy.restapiexample.com/api/v1/employees' ,'method': 'GET','timeout': 10000,'followRedirect': true}";
-    let onSuccessApiReqObject = req.headers.onSuccessApiReqObject || process.env.onSuccessApiReqObject ||
-    "{'url': 'http://dummy.restapiexample.com/api/v1/create','headers' : {'content-type': 'application/json',},'method': 'POST','followRedirect': true,body: '##res.body##', 'json': true }" // ##res.body## you have use this to re
+    let runTime = req.headers.runtime || process.env.RUN_TIME || 120000; 
+    const firstApiObject = req.headers.firstapiobject || process.env.FIRST_API_OBJECT //you can define in env also (or) pass in the headers
+    || '{"url": "http://dummy.restapiexample.com/api/v1/employees" ,"method": "GET","timeout": 10000,"followRedirect": true}';
+   const onSuccessApiReqObject = req.headers.onSuccessApiReqObject || process.env.onSuccessApiReqObject || //you can define in env also (or) pass in the headers
+   '{"url": "http://dummy.restapiexample.com/api/v1/create","headers" : {"content-type": "application/json"},"method": "POST","followRedirect": true, "json": true }'; // ##res.body## you have use this to re
     callRequestLoop(interval,firstApiObject,onSuccessApiReqObject);
-    setTimeout(() => { clearInterval(requestLoop); }, runTime);
+    setTimeout(() => { clearInterval(requestLoop); console.log('---- END -----'); }, runTime);
     callback(req);
 }
 

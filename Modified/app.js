@@ -12,8 +12,11 @@ app.get('/', (req, res) => {
         res.send(stringify(response.headers));//included for testing
     },req);
 });
-
-/******* DONT TRY THIS */
+ 
+/******
+ * You can pass interval,runtime,firstapiobject,onsuccessapireqobject 
+ * object like : {"url": "http://dummy.restapiexample.com/api/v1/create","headers" : {"content-type": "application/json"},"method": "POST","followRedirect": true, "json": true }
+ */
 app.get('/dynamic', (req, res) => {
     apiCallFromDynamicRequest.callDynamicApi(function(response){       
         res.send(stringify(response.headers));//included for testing
